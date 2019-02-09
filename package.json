@@ -1,0 +1,16 @@
+{
+  "name": "ddns",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "nodemon --watch '*.ts' --exec 'ts-node' index.ts",
+    "start": "ts-node src/index.ts"
+  },
+  "repository": "https://github.com/myWsq/ddns.git",
+  "author": "wsq <wsq961@outlook.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.18.10",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.3"
+  }
+}
