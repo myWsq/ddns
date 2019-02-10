@@ -9,8 +9,16 @@
   "author": "wsq <wsq961@outlook.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^10.12.24",
     "nodemon": "^1.18.10",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "@alicloud/pop-core": "^1.7.5",
+    "axios": "^0.18.0",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^4.0.6",
+    "typeorm": "^0.2.12"
   }
 }
