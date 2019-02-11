@@ -30,10 +30,10 @@ export default class AliyunDnsService extends DnsService {
 	}
 
 	instance: Core;
-	intervalID: NodeJS.Timeout;
 
 	/** 获得当前的解析对 */
 	async getDomainRecords() {
+		await this.config.reload();
 		/** 组合请求, 查询所有的配置项中的域名信息 */
 		const requests = await Promise.all(
 			this.config.domains.map((item) =>
@@ -87,6 +87,15 @@ export default class AliyunDnsService extends DnsService {
 			};
 
 			return (await this.instance.request('UpdateDomainRecord', params)) as AliyunDomainRecordInterface;
+		}
+	}
+
+	async validate() {
+		try {
+			await this.instance.request('DescribeDomains', {});
+			return true;
+		} catch (error) {
+			return false;
 		}
 	}
 }

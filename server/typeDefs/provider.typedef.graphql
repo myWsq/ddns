@@ -5,6 +5,7 @@ type Provider {
 	accessKeySecret: String!
 	domains: [Domain!]!
 	delay: Int!
+	valid:Boolean!
 	isRunning: Boolean!
 }
 
@@ -15,4 +16,12 @@ type Query {
 type Mutation {
 	startProvider(id: Int!): Provider!
 	stopProvider(id: Int!): Provider!
+	addProvider(input: AddProviderDto!): Provider!
+}
+
+input AddProviderDto {
+	type: String!
+	accessKeyId: String!
+	accessKeySecret: String!
+	delay: Int
 }

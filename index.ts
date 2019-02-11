@@ -3,7 +3,6 @@ import 'reflect-metadata';
 import { createConnection, getManager } from 'typeorm';
 import { Provider } from './entity/Provider';
 import server from './server/app';
-import connectionPoolSerivce from './service/ConnectionPoolService';
 
 async function main() {
 	await createConnection();

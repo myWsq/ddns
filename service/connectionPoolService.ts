@@ -1,43 +1,21 @@
-import { DnsService } from "./DnsService";
-
-interface ConnectionStore {
-	[key: number]: DnsService;
-}
+import { DnsService } from './DnsService';
+import * as Keyv from 'keyv';
 
 /** 公共的连接池, 统一管理正在运行的provider进程 */
-export class ConnectionPoolService {
-	constructor() {}
-	public store: ConnectionStore = {};
+const STORE = new Keyv();
 
-	push(dnsService: DnsService) {
-		const cur = this.store[dnsService.config.id];
-		try {
-			if (!cur) {
-				dnsService.run();
-				this.store[dnsService.config.id] = dnsService;
-			}
-		} catch (error) {}
-	}
-
-	remove(id: number) {
-		const provider = this.store[id];
-		try {
-			provider.shutdown();
-			delete this.store[id];
-			return provider;
-		} catch (error) {}
-	}
-
-	restart(id: number) {
-		const provider = this.remove(id);
-		this.push(provider);
-	}
-
-	isRunning(id: number) {
-		return !!this.store[id];
-	}
+export async function pushService(dnsService: DnsService) {
+	await STORE.set(dnsService.config.id.toString(), dnsService);
 }
 
-const connectionPoolSerivce = new ConnectionPoolService();
+export async function removeService(id: number) {
+	await STORE.delete(id.toString());
+}
 
-export default connectionPoolSerivce;
+export async function isServiceRunning(id: number) {
+	return !!await STORE.get(id.toString());
+}
+
+export async function getService(id: number): Promise<DnsService> {
+	return await STORE.get(id.toString());
+}
