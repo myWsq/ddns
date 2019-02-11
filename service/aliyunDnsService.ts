@@ -1,18 +1,15 @@
 import * as Core from '@alicloud/pop-core';
-import { getPubIp } from './ipService';
 import { isIP } from 'net';
 import { Provider } from '../entity/Provider';
-import { DnsService } from './DnsService';
+import { DnsService, DomainRecordInterface } from './DnsService';
 
 const API_ENDPOINT = 'https://alidns.aliyuncs.com';
 const API_VERSION = '2015-01-09';
 
-export interface DomainRecordInterface {
+export interface AliyunDomainRecordInterface extends DomainRecordInterface {
 	RR: string /** 解析值 */;
 	Status: 'ENABLE' | 'DISABLE' /** 解析状态 */;
-	Value: string /** 记录值 */;
 	Weight: number /** 权重 */;
-	RecordId: string /** 唯一ID */;
 	Type: string /** 记录类型 */;
 	DomainName: string /** 当前域名 */;
 	Locked: false /** 解析记录锁定状态 */;
@@ -47,8 +44,8 @@ export default class AliyunDnsService extends DnsService {
 						Type: 'A',
 					});
 					const record = DomainRecords.Record.filter(
-						(record: DomainRecordInterface) => record.RR === item.rr
-					)[0] as DomainRecordInterface;
+						(record: AliyunDomainRecordInterface) => record.RR === item.rr
+					)[0] as AliyunDomainRecordInterface;
 					return record;
 				})()
 			)
@@ -71,7 +68,7 @@ export default class AliyunDnsService extends DnsService {
 				Type: 'A',
 				Value: value,
 			};
-			return await this.instance.request('AddDomainRecord', params);
+			return (await this.instance.request('AddDomainRecord', params)) as AliyunDomainRecordInterface;
 		}
 	}
 	/**
@@ -89,7 +86,7 @@ export default class AliyunDnsService extends DnsService {
 				Value: value,
 			};
 
-			return await this.instance.request('UpdateDomainRecord', params);
+			return (await this.instance.request('UpdateDomainRecord', params)) as AliyunDomainRecordInterface;
 		}
 	}
 }

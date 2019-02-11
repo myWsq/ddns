@@ -1,9 +1,9 @@
-import AliyunDnsService from './service/aliyunDnsService';
+import AliyunDnsService from './service/AliyunDnsService';
 import 'reflect-metadata';
 import { createConnection, getManager } from 'typeorm';
 import { Provider } from './entity/Provider';
 import server from './server/app';
-import connectionPoolSerivce from './service/connectionPoolService';
+import connectionPoolSerivce from './service/ConnectionPoolService';
 
 async function main() {
 	await createConnection();

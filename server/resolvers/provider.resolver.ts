@@ -1,6 +1,6 @@
 import { Provider } from '../../entity/Provider';
-import connectionPoolSerivce from '../../service/connectionPoolService';
-import AliyunDnsService from '../../service/aliyunDnsService';
+import connectionPoolSerivce from '../../service/ConnectionPoolService';
+import AliyunDnsService from '../../service/AliyunDnsService';
 
 export default {
 	Query: {

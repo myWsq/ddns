@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from 'typeorm';
 import { Domain } from './Domain';
-import connectionPoolSerivce from '../service/connectionPoolService';
+import connectionPoolSerivce from '../service/ConnectionPoolService';
 
 @Entity()
 export class Provider extends BaseEntity {

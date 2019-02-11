@@ -1,13 +1,17 @@
 import { Provider } from '../entity/Provider';
-import { getPubIp } from './ipService';
+import { getPubIp } from './IpService';
 
+export interface DomainRecordInterface {
+	Value: string /** 记录值 */;
+	RecordId: string /** 唯一ID */;
+}
 export class DnsService {
 	constructor(public readonly config: Provider) {}
 
 	intervalID: NodeJS.Timeout;
 
-	async getDomainRecords() {
-		return [];
+	getDomainRecords(): Promise<DomainRecordInterface[]> {
+		throw new Error('You must rewrite this function');
 	}
 
 	/**
@@ -16,8 +20,8 @@ export class DnsService {
      * @param rr 解析值
      * @param value 记录值
      */
-	async createDomainRecord(domainName: string, rr: string, value: string) {
-		return {};
+	createDomainRecord(domainName: string, rr: string, value: string): Promise<DomainRecordInterface> {
+		throw new Error('You must rewrite this function');
 	}
 
 	/**
@@ -26,8 +30,8 @@ export class DnsService {
      * @param rr 解析值
      * @param value 记录值
      */
-	async updateDomainRecord(recordId: string, rr: string, value: string) {
-		return {};
+	updateDomainRecord(recordId: string, rr: string, value: string): Promise<DomainRecordInterface> {
+		throw new Error('You must rewrite this function');
 	}
 
 	run() {
@@ -47,14 +51,14 @@ export class DnsService {
 				});
 			}
 		}, this.config.delay);
-		console.log(`DnsService [${this.config.id}] start`)
+		console.log(`DnsService [${this.config.id}] start`);
 	}
 
 	shutdown() {
 		if (this.intervalID) {
 			clearInterval(this.intervalID);
 			this.intervalID = undefined;
-			console.log(`DnsService [${this.config.id}] stop`)
+			console.log(`DnsService [${this.config.id}] stop`);
 		}
 	}
 }
