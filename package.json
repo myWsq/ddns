@@ -17,6 +17,8 @@
   "dependencies": {
     "@alicloud/pop-core": "^1.7.5",
     "axios": "^0.18.0",
+    "graphql-yoga": "^1.17.4",
+    "merge-graphql-schemas": "^1.5.8",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^4.0.6",
     "typeorm": "^0.2.12"

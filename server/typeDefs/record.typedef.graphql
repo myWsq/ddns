@@ -1,0 +1,12 @@
+type Record{
+    RR: String!
+	Status: String!
+	Value: String!
+	Weight: Int!
+	RecordId: String!
+	Type: String!
+	DomainName: String!
+	Locked: Boolean!
+	Line: String!
+	TTL: Int!
+}

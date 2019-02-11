@@ -1,0 +1,18 @@
+type Provider {
+	id: Int!
+	type: String!
+	accessKeyId: String!
+	accessKeySecret: String!
+	domains: [Domain!]!
+	delay: Int!
+	isRunning: Boolean!
+}
+
+type Query {
+	providers: [Provider!]!
+}
+
+type Mutation {
+	startProvider(id: Int!): Provider!
+	stopProvider(id: Int!): Provider!
+}

@@ -1,4 +1,4 @@
-import axios from '../plugins/axios';
+import axios from 'axios';
 import { isIP } from 'net';
 
 const getPubIpUrl = [

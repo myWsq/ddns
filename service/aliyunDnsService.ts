@@ -1,11 +1,11 @@
-import { AliyunConfigInterface } from '../config';
 import * as Core from '@alicloud/pop-core';
 import { getPubIp } from './ipService';
 import { isIP } from 'net';
+import { Provider } from '../entity/Provider';
+import { DnsService } from './DnsService';
 
 const API_ENDPOINT = 'https://alidns.aliyuncs.com';
 const API_VERSION = '2015-01-09';
-const REFRESH_DELAY = 300 * 1000;
 
 export interface DomainRecordInterface {
 	RR: string /** 解析值 */;
@@ -20,8 +20,9 @@ export interface DomainRecordInterface {
 	TTL: 600 /** 生存时间 */;
 }
 
-export default class AliyunDnsService {
-	constructor(private readonly config: AliyunConfigInterface) {
+export default class AliyunDnsService extends DnsService {
+	constructor(public readonly config: Provider) {
+		super(config);
 		/** 初始化请求客户端实例 */
 		this.instance = new Core({
 			accessKeyId: config.accessKeyId,
@@ -41,7 +42,7 @@ export default class AliyunDnsService {
 			this.config.domains.map((item) =>
 				(async () => {
 					const { DomainRecords } = await this.instance.request('DescribeDomainRecords', {
-						DomainName: item.domainName,
+						DomainName: item.name,
 						RRKeyWord: item.rr,
 						Type: 'A',
 					});
@@ -89,36 +90,6 @@ export default class AliyunDnsService {
 			};
 
 			return await this.instance.request('UpdateDomainRecord', params);
-		}
-	}
-
-	run() {
-		if (this.intervalID) {
-			this.shutdown();
-		}
-		this.intervalID = setInterval(async () => {
-			const pubIp = await getPubIp();
-			if (pubIp) {
-				const recordList = await this.getDomainRecords();
-				recordList.forEach((item, index) => {
-					if (item && item.Value !== pubIp) {
-						this.updateDomainRecord(item.RecordId, this.config.domains[index].rr, pubIp);
-					} else if (!item) {
-						this.createDomainRecord(
-							this.config.domains[index].domainName,
-							this.config.domains[index].rr,
-							pubIp
-						);
-					}
-				});
-			}
-		}, REFRESH_DELAY);
-	}
-
-	shutdown() {
-		if (this.intervalID) {
-			clearInterval(this.intervalID);
-			this.intervalID = undefined;
 		}
 	}
 }
