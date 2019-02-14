@@ -1,0 +1,9 @@
+type Domain {
+	id: Int!
+	name: String!
+	rr: String!
+}
+
+type Query {
+	domains: [Domain!]!
+}
