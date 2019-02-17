@@ -20,9 +20,11 @@ async function main() {
 	// 	connectionPoolSerivce.push(aliyunService)
 	// });
 
-	await server.start({ port: 4004 });
+	await server.start({ port: 4004, endpoint: '/graphql', playground: '/playground' });
 
-	console.log('Server is running on http://localhost:4004');
+	console.log('Client is running on http://localhost:4004');
+	console.log('Grpahql Server is running on http://localhost:4004/graphql');
+	console.log('Playground is running on http://localhost:4004/playground');
 }
 
 main();

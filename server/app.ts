@@ -2,6 +2,7 @@ import { GraphQLServer } from 'graphql-yoga';
 import * as directiveResolvers from './directiveResolver';
 import * as path from 'path';
 import { fileLoader, mergeTypes } from 'merge-graphql-schemas';
+import * as express from 'express';
 
 /** 统一处理resolver与typedef */
 const typesArray = fileLoader(path.join(__dirname, 'typeDefs/*.typedef.graphql'));
@@ -16,5 +17,8 @@ const server = new GraphQLServer({
 		return req;
 	},
 });
+
+/** 提供静态文件 */
+server.express.use(express.static(__dirname + '/client'))
 
 export default server;
