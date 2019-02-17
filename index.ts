@@ -3,9 +3,11 @@ import 'reflect-metadata';
 import { createConnection, getManager } from 'typeorm';
 import { Provider } from './entity/Provider';
 import server from './server/app';
+import { init } from './service/configService';
 
 async function main() {
 	await createConnection();
+	init();
 	// const entityManager = getManager();
 	// const providers = await entityManager.find(Provider, {
 	// 	where: { type: 'aliyun' },
@@ -21,7 +23,6 @@ async function main() {
 	await server.start({ port: 4004 });
 
 	console.log('Server is running on http://localhost:4004');
-	
 }
 
 main();

@@ -1,0 +1,4 @@
+type Mutation {
+	validateSecretKey(secretKey: String!): Boolean!
+	setSecretKey(new: String!, old: String!): String!
+}

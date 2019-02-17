@@ -2,6 +2,7 @@ import * as Core from '@alicloud/pop-core';
 import { isIP } from 'net';
 import { Provider } from '../entity/Provider';
 import { DnsService, DomainRecordInterface } from './DnsService';
+import { Log } from '../entity/Log';
 
 const API_ENDPOINT = 'https://alidns.aliyuncs.com';
 const API_VERSION = '2015-01-09';
@@ -93,8 +94,10 @@ export default class AliyunDnsService extends DnsService {
 	async validate() {
 		try {
 			await this.instance.request('DescribeDomains', {});
+			Log.add(this.config.id, `[${this.config.type}] Provider [${this.config.id}] validate successful.`);
 			return true;
 		} catch (error) {
+			Log.add(this.config.id, `[${this.config.type}] Provider [${this.config.id}] validate failed, ${error}.`);
 			return false;
 		}
 	}

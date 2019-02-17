@@ -4,24 +4,34 @@ type Provider {
 	accessKeyId: String!
 	accessKeySecret: String!
 	domains: [Domain!]!
+	logs: [Log!]!
 	delay: Int!
-	valid:Boolean!
+	valid: Boolean!
 	isRunning: Boolean!
 }
 
 type Query {
-	providers: [Provider!]!
+	providers: [Provider!]! @auth
 }
 
 type Mutation {
-	startProvider(id: Int!): Provider!
-	stopProvider(id: Int!): Provider!
-	addProvider(input: AddProviderDto!): Provider!
+	startProvider(id: Int!): Provider! @auth
+	stopProvider(id: Int!): Provider! @auth
+	addProvider(input: AddProviderDto!): Provider! @auth
+	updateProvider(id: Int!, input: UpdateProviderDto!): Provider! @auth
+	deleteProvider(id: Int!): Provider! @auth
 }
 
 input AddProviderDto {
 	type: String!
 	accessKeyId: String!
 	accessKeySecret: String!
+	delay: Int
+}
+
+input UpdateProviderDto {
+	type: String
+	accessKeyId: String
+	accessKeySecret: String
 	delay: Int
 }

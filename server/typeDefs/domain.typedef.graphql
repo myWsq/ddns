@@ -4,6 +4,13 @@ type Domain {
 	rr: String!
 }
 
-type Query {
-	domains: [Domain!]!
+input DomainDto {
+	name: String!
+	rr: String!
+}
+
+type Mutation {
+	addDomain(providerID: Int!, domain: DomainDto!): Domain! @auth
+	deleteDomain(id: Int): Domain! @auth
+	updateDomain(id: Int, domain: DomainDto!): Domain! @auth
 }

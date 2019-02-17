@@ -1,6 +1,7 @@
 import { Provider } from '../entity/Provider';
 import { getPubIp } from './IpService';
 import { pushService, removeService } from './ConnectionPoolService';
+import { Log } from '../entity/Log';
 
 export interface DomainRecordInterface {
 	Value: string /** 记录值 */;
@@ -15,7 +16,7 @@ const MAX_INVALID_RETRY_TIMES = 10;
 export class DnsService {
 	constructor(public readonly config: Provider) {}
 
-	private intervalID: NodeJS.Timeout;
+	public intervalID: NodeJS.Timeout;
 	private inValidRetryTimes = 0;
 	private retryTimes = 0;
 
@@ -49,8 +50,10 @@ export class DnsService {
 
 	async run() {
 		/** 写入公共连接池 */
-		await pushService(this);
-
+		pushService(this);
+		await Log.deleteAll(this.config.id);
+		/** 写入日志 */
+		Log.add(this.config.id, `[${this.config.type}] DNS service [${this.config.id}] is running`);
 		/** 如果ID重复先关闭一个 */
 		if (this.intervalID) {
 			this.shutdown();
@@ -74,9 +77,17 @@ export class DnsService {
 						recordList.forEach((item, index) => {
 							/** 此域名已存在, 更新域名记录值 */
 							if (item && item.Value !== pubIp) {
+								Log.add(
+									this.config.id,
+									`The value of domain [${item.RecordId}] is going to be replaced by '${item.RecordId}'`
+								);
 								this.updateDomainRecord(item.RecordId, this.config.domains[index].rr, pubIp);
-							/** 域名不存在, 新增一条记录 */
+								/** 域名不存在, 新增一条记录 */
 							} else if (!item) {
+								Log.add(
+									this.config.id,
+									`It's going to be created a new domain Record  '${item.RecordId}'`
+								);
 								this.createDomainRecord(
 									this.config.domains[index].name,
 									this.config.domains[index].rr,
@@ -88,20 +99,22 @@ export class DnsService {
 					/** 正常则清空尝试次数 */
 					this.inValidRetryTimes = 0;
 					this.retryTimes = 0;
-				/** 如果无效则重新尝试 */
+					/** 如果无效则重新尝试 */
 				} else if (this.inValidRetryTimes <= MAX_INVALID_RETRY_TIMES) {
-					console.log(
+					Log.add(
+						this.config.id,
 						`Invalid Provider [${this.config.id}] ... retry ${this
 							.inValidRetryTimes}/${MAX_INVALID_RETRY_TIMES}`
 					);
+
 					this.inValidRetryTimes++;
-				/** 超过最大尝试次数停止 */
+					/** 超过最大尝试次数停止 */
 				} else {
 					this.config.valid = false;
 					await this.config.save();
 					this.shutdown();
 				}
-			/** 防止意外发生挂起, 设置总的异常重试处理 */
+				/** 防止意外发生挂起, 设置总的异常重试处理 */
 			} catch (error) {
 				if (this.retryTimes <= MAX_RETRY_TIMES) {
 					this.retryTimes++;
@@ -110,8 +123,6 @@ export class DnsService {
 				}
 			}
 		}, this.config.delay);
-
-		console.log(`DnsService [${this.config.id}] start`);
 	}
 
 	shutdown() {
@@ -119,7 +130,7 @@ export class DnsService {
 			clearInterval(this.intervalID);
 			this.intervalID = undefined;
 			removeService(this.config.id);
-			console.log(`DnsService [${this.config.id}] stop`);
+			Log.add(this.config.id, `[${this.config.type}] DNS service [${this.config.id}] is closed.`);
 		}
 	}
 }
